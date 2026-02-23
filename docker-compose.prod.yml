@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (for local prod testing)
+  db:
+    image: postgres:15-alpine
+    container_name: warehouse_db_prod
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # FastAPI Application
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: warehouse_api_prod
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+      DEBUG: "False"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    restart: unless-stopped
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
+
+volumes:
+  postgres_data_prod:
