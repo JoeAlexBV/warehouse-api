@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-# Import your models and database Base
+# Import models and database Base
 from app.database import Base
 from app.models import Category, Supplier, Product, StockMovement
 from app.config import settings
@@ -20,7 +20,6 @@ config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here for 'autogenerate' support
 target_metadata = Base.metadata
 
 
